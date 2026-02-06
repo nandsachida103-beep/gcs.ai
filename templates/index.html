@@ -5,37 +5,110 @@
     <title>GCS AI - Sinoy</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            padding: 20px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eaf2fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        #chatbox {
-            width: 100%;
-            max-width: 700px;
-            margin: auto;
-            border: 1px solid #ccc;
+
+        .chat-container {
+            background: #ffffff;
+            width: 500px; /* medium size */
+            height: 600px; /* medium height */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #3b82f6;
+            color: white;
+            text-align: center;
             padding: 15px;
-            background: #fff;
-            height: 400px;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        #chatbox {
+            flex: 1;
+            padding: 15px;
             overflow-y: auto;
+            border-bottom: 1px solid #ddd;
         }
-        #userInput {
-            width: 80%;
+
+        #userInputContainer {
+            display: flex;
             padding: 10px;
+            background: #f1f5f9;
         }
+
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
         #sendBtn {
             padding: 10px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        .user { color: blue; }
-        .sinoy { color: green; }
-        p { margin: 5px 0; }
+
+        #sendBtn:hover {
+            background-color: #2563eb;
+        }
+
+        .user {
+            color: #1e3a8a;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .sinoy {
+            color: #059669;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        p.message {
+            margin: 2px 0;
+            padding: 5px 8px;
+            border-radius: 6px;
+        }
+
+        .user.message {
+            background-color: #dbeafe;
+            text-align: right;
+        }
+
+        .sinoy.message {
+            background-color: #d1fae5;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
-    <h1>GCS AI - Ask Sinoy</h1>
-    <div id="chatbox"></div>
-    <input type="text" id="userInput" placeholder="Ask something about GCS..." />
-    <button id="sendBtn">Send</button>
+    <div class="chat-container">
+        <div class="header">GCS AI - Ask Sinoy</div>
+        <div id="chatbox"></div>
+        <div id="userInputContainer">
+            <input type="text" id="userInput" placeholder="Type your question here..." />
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
 
     <script>
         const chatbox = document.getElementById('chatbox');
@@ -44,16 +117,16 @@
 
         function addMessage(sender, text) {
             const p = document.createElement('p');
-            p.className = sender;
+            p.className = sender + " message";
             p.textContent = text;
             chatbox.appendChild(p);
             chatbox.scrollTop = chatbox.scrollHeight;
         }
 
-        sendBtn.addEventListener('click', () => {
+        function sendQuery() {
             const query = input.value.trim();
             if (!query) return;
-            addMessage('user', "You: " + query);
+            addMessage('user', query);
             input.value = '';
 
             fetch('/ask', {
@@ -63,13 +136,17 @@
             })
             .then(res => res.json())
             .then(data => {
-                addMessage('sinoy', "Sinoy: " + data.answer);
+                addMessage('sinoy', data.answer);
+            })
+            .catch(() => {
+                addMessage('sinoy', 'Sorry, something went wrong. Please try again.');
             });
-        });
+        }
 
-        input.addEventListener("keypress", function(e) {
-            if (e.key === 'Enter') sendBtn.click();
+        sendBtn.addEventListener('click', sendQuery);
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendQuery();
         });
     </script>
 </body>
-</html>
+    </html>
