@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GCS AI - Sinoy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            padding: 20px;
+        }
+        #chatbox {
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 15px;
+            background: #fff;
+            height: 400px;
+            overflow-y: auto;
+        }
+        #userInput {
+            width: 80%;
+            padding: 10px;
+        }
+        #sendBtn {
+            padding: 10px 15px;
+        }
+        .user { color: blue; }
+        .sinoy { color: green; }
+        p { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>GCS AI - Ask Sinoy</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Ask something about GCS..." />
+    <button id="sendBtn">Send</button>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const input = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function addMessage(sender, text) {
+            const p = document.createElement('p');
+            p.className = sender;
+            p.textContent = text;
+            chatbox.appendChild(p);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', () => {
+            const query = input.value.trim();
+            if (!query) return;
+            addMessage('user', "You: " + query);
+            input.value = '';
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            })
+            .then(res => res.json())
+            .then(data => {
+                addMessage('sinoy', "Sinoy: " + data.answer);
+            });
+        });
+
+        input.addEventListener("keypress", function(e) {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+    </script>
+</body>
+</html>
