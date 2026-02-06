@@ -4,99 +4,111 @@
     <meta charset="UTF-8">
     <title>GCS AI - Sinoy</title>
     <style>
+        /* Body & Page */
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eaf2fc;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
+        /* Chat container */
         .chat-container {
+            width: 450px;
+            max-width: 90%;
+            height: 600px;
             background: #ffffff;
-            width: 500px; /* medium size */
-            height: 600px; /* medium height */
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
+        /* Header */
         .header {
             background-color: #3b82f6;
             color: white;
+            padding: 18px;
             text-align: center;
-            padding: 15px;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
 
+        /* Chat messages */
         #chatbox {
             flex: 1;
             padding: 15px;
             overflow-y: auto;
-            border-bottom: 1px solid #ddd;
+            background: #f9fafb;
         }
 
+        .message {
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 20px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .user {
+            background: #dbeafe;
+            align-self: flex-end;
+            color: #1e3a8a;
+        }
+
+        .sinoy {
+            background: #d1fae5;
+            align-self: flex-start;
+            color: #059669;
+        }
+
+        /* Input section */
         #userInputContainer {
             display: flex;
-            padding: 10px;
+            padding: 12px;
             background: #f1f5f9;
+            border-top: 1px solid #ddd;
         }
 
         #userInput {
             flex: 1;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 10px 15px;
+            border-radius: 25px;
             border: 1px solid #ccc;
+            outline: none;
             font-size: 1rem;
         }
 
         #sendBtn {
-            padding: 10px 15px;
             margin-left: 10px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 25px;
             background-color: #3b82f6;
             color: white;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: 0.3s;
         }
 
         #sendBtn:hover {
             background-color: #2563eb;
         }
 
-        .user {
-            color: #1e3a8a;
-            font-weight: bold;
-            margin-bottom: 8px;
+        /* Scrollbar styling */
+        #chatbox::-webkit-scrollbar {
+            width: 6px;
         }
-
-        .sinoy {
-            color: #059669;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        p.message {
-            margin: 2px 0;
-            padding: 5px 8px;
-            border-radius: 6px;
-        }
-
-        .user.message {
-            background-color: #dbeafe;
-            text-align: right;
-        }
-
-        .sinoy.message {
-            background-color: #d1fae5;
-            text-align: left;
+        #chatbox::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -105,7 +117,7 @@
         <div class="header">GCS AI - Ask Sinoy</div>
         <div id="chatbox"></div>
         <div id="userInputContainer">
-            <input type="text" id="userInput" placeholder="Type your question here..." />
+            <input type="text" id="userInput" placeholder="Ask me anything about GCS..." />
             <button id="sendBtn">Send</button>
         </div>
     </div>
@@ -116,8 +128,8 @@
         const sendBtn = document.getElementById('sendBtn');
 
         function addMessage(sender, text) {
-            const p = document.createElement('p');
-            p.className = sender + " message";
+            const p = document.createElement('div');
+            p.className = "message " + sender;
             p.textContent = text;
             chatbox.appendChild(p);
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -149,4 +161,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
