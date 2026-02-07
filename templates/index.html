@@ -2,163 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GCS AI - Sinoy</title>
-    <style>
-        /* Body & Page */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        /* Chat container */
-        .chat-container {
-            width: 450px;
-            max-width: 90%;
-            height: 600px;
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Header */
-        .header {
-            background-color: #3b82f6;
-            color: white;
-            padding: 18px;
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-
-        /* Chat messages */
-        #chatbox {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: #f9fafb;
-        }
-
-        .message {
-            padding: 10px 15px;
-            margin: 8px 0;
-            border-radius: 20px;
-            max-width: 80%;
-            word-wrap: break-word;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .user {
-            background: #dbeafe;
-            align-self: flex-end;
-            color: #1e3a8a;
-        }
-
-        .sinoy {
-            background: #d1fae5;
-            align-self: flex-start;
-            color: #059669;
-        }
-
-        /* Input section */
-        #userInputContainer {
-            display: flex;
-            padding: 12px;
-            background: #f1f5f9;
-            border-top: 1px solid #ddd;
-        }
-
-        #userInput {
-            flex: 1;
-            padding: 10px 15px;
-            border-radius: 25px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        #sendBtn {
-            margin-left: 10px;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 25px;
-            background-color: #3b82f6;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        #sendBtn:hover {
-            background-color: #2563eb;
-        }
-
-        /* Scrollbar styling */
-        #chatbox::-webkit-scrollbar {
-            width: 6px;
-        }
-        #chatbox::-webkit-scrollbar-thumb {
-            background: #9ca3af;
-            border-radius: 3px;
-        }
-    </style>
+    <title>GCS AI Helpdesk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="chat-container">
-        <div class="header">GCS AI - Ask Sinoy</div>
-        <div id="chatbox"></div>
-        <div id="userInputContainer">
-            <input type="text" id="userInput" placeholder="Ask me anything about GCS..." />
-            <button id="sendBtn">Send</button>
-        </div>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen font-sans">
+
+<div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-xl">
+    <h1 class="text-3xl font-bold text-center mb-6 text-blue-700">GCS AI Helpdesk</h1>
+    
+    <div class="flex mb-4">
+        <input id="queryInput" type="text" placeholder="Ask anything about the school..."
+               class="flex-grow p-3 rounded-l-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <button onclick="askQuestion()" class="bg-blue-500 text-white px-6 rounded-r-lg hover:bg-blue-600 transition">Ask</button>
     </div>
 
-    <script>
-        const chatbox = document.getElementById('chatbox');
-        const input = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
+    <div id="responseBox" class="bg-blue-100 p-4 rounded-lg min-h-[80px] text-blue-900"></div>
+</div>
 
-        function addMessage(sender, text) {
-            const p = document.createElement('div');
-            p.className = "message " + sender;
-            p.textContent = text;
-            chatbox.appendChild(p);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }
+<script>
+async function askQuestion() {
+    const query = document.getElementById('queryInput').value;
+    if (!query) return;
 
-        function sendQuery() {
-            const query = input.value.trim();
-            if (!query) return;
-            addMessage('user', query);
-            input.value = '';
+    const responseBox = document.getElementById('responseBox');
+    responseBox.innerHTML = "Loading...";
 
-            fetch('/ask', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query })
-            })
-            .then(res => res.json())
-            .then(data => {
-                addMessage('sinoy', data.answer);
-            })
-            .catch(() => {
-                addMessage('sinoy', 'Sorry, something went wrong. Please try again.');
-            });
-        }
+    try {
+        const res = await fetch(`/ask?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        responseBox.innerHTML = `<strong>Query:</strong> ${data.query}<br><strong>Answer:</strong> ${data.answer}`;
+    } catch (error) {
+        responseBox.innerHTML = "Error connecting to server.";
+    }
+}
+</script>
 
-        sendBtn.addEventListener('click', sendQuery);
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendQuery();
-        });
-    </script>
 </body>
 </html>
