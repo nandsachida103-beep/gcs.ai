@@ -3,39 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>GCS AI Helpdesk</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="bg-blue-50 flex items-center justify-center min-h-screen font-sans">
-
-<div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-xl">
-    <h1 class="text-3xl font-bold text-center mb-6 text-blue-700">GCS AI Helpdesk</h1>
-    
-    <div class="flex mb-4">
-        <input id="queryInput" type="text" placeholder="Ask anything about the school..."
-               class="flex-grow p-3 rounded-l-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
-        <button onclick="askQuestion()" class="bg-blue-500 text-white px-6 rounded-r-lg hover:bg-blue-600 transition">Ask</button>
+<body>
+<div class="container">
+    <h1>GCS AI Helpdesk</h1>
+    <div class="chatbox">
+        <div id="chatLog"></div>
+        <input type="text" id="queryInput" placeholder="Ask anything about the school..." />
+        <button onclick="askQuestion()">Send</button>
     </div>
-
-    <div id="responseBox" class="bg-blue-100 p-4 rounded-lg min-h-[80px] text-blue-900"></div>
 </div>
-
-<script>
-async function askQuestion() {
-    const query = document.getElementById('queryInput').value;
-    if (!query) return;
-
-    const responseBox = document.getElementById('responseBox');
-    responseBox.innerHTML = "Loading...";
-
-    try {
-        const res = await fetch(`/ask?query=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        responseBox.innerHTML = `<strong>Query:</strong> ${data.query}<br><strong>Answer:</strong> ${data.answer}`;
-    } catch (error) {
-        responseBox.innerHTML = "Error connecting to server.";
-    }
-}
-</script>
-
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
